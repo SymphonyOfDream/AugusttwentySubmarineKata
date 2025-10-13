@@ -78,9 +78,6 @@ public class SubmarineTerminalRunner implements CommandLineRunner
     {
         val helpFormatter = HelpFormatter.builder().get();
 
-        val header = "This application allows you to move a submarine via giving it commands, either through Interactive mode where you give commands one at a time, or through Batch mode where you specify a file containing all commands to be run in sequential order.\n\n";
-        val footer = "\nIf the command file is not specified, then the program runs in Interactive mode, otherwise it runs in Batch mode.";
-
         try
         {
             helpFormatter.printHelp("SubmarineKata-0.0.1-SNAPSHOT", "", applicationCliOptions, "", true);

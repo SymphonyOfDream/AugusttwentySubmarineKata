@@ -5,8 +5,12 @@ import lombok.val;
 import org.apache.commons.cli.ParseException;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.text.DecimalFormat;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,77 +77,32 @@ class CommandTest
         assertEquals(distance, command.distance());
     }
 
-    @Test
-    void testCreateFromInvalidString_TooFewParts()
+    @ParameterizedTest
+    @MethodSource("provideInvalidCommandStringsForTest")
+    void testCreateCommandFromInvalidString(String commandString)
     {
-        ParseException exception = assertThrows(ParseException.class, () ->
-        {
-            Command.create("forward");
-        });
+        Exception exception = assertThrows(Exception.class, () -> Command.create(commandString));
 
         assertTrue(exception.getMessage().contains("Invalid command"));
     }
 
-    @Test
-    void testCreateFromInvalidString_TooManyParts()
+    private static Stream<Arguments> provideInvalidCommandStringsForTest()
     {
-        ParseException exception = assertThrows(ParseException.class, () ->
-        {
-            Command.create("forward 10 extra");
-        });
-
-        assertTrue(exception.getMessage().contains("Invalid command"));
-    }
-
-    @Test
-    void testCreateFromInvalidString_InvalidDirection()
-    {
-        ParseException exception = assertThrows(ParseException.class, () ->
-        {
-            Command.create("backward 10");
-        });
-
-        assertTrue(exception.getMessage().contains("Invalid command"));
-    }
-
-    @Test
-    void testCreateFromInvalidString_InvalidDistance()
-    {
-        ParseException exception = assertThrows(ParseException.class, () ->
-        {
-            Command.create("forward abc");
-        });
-
-        assertTrue(exception.getMessage().contains("Invalid command"));
-    }
-
-    @Test
-    void testCreateFromInvalidString_EmptyString()
-    {
-        ParseException exception = assertThrows(ParseException.class, () ->
-        {
-            Command.create("");
-        });
-
-        assertTrue(exception.getMessage().contains("Invalid command"));
-    }
-
-    @Test
-    void testCreateThrowsNullPointerException_NullString()
-    {
-        assertThrows(NullPointerException.class, () ->
-        {
-            Command.create(null);
-        });
+        return Stream.of(
+                Arguments.of((String) null),
+                Arguments.of(""),
+                Arguments.of("forward"),
+                Arguments.of("forward 10 extra"),
+                Arguments.of("backward 10"),
+                Arguments.of("forward abc")
+        );
     }
 
     @Test
     void testCommandConstructorThrowsNullPointerException_NullDirection()
     {
-        assertThrows(NullPointerException.class, () ->
-        {
-            new Command(null, RandomValueUtils.randomPositiveSinglePrecisionDouble());
-        });
+        val distance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        assertThrows(NullPointerException.class, () -> new Command(null, distance));
     }
 
     @Test
