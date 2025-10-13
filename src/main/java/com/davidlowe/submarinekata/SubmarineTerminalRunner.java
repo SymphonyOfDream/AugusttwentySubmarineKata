@@ -39,6 +39,9 @@ public class SubmarineTerminalRunner implements CommandLineRunner
     private static final String DEPTH_START_LONG_OPTION = "depth-start";
     private static final String DEPTH_START_SHORT_OPTION = "ds";
 
+    private static final String AIM_START_LONG_OPTION = "aim-start";
+    private static final String AIM_START_SHORT_OPTION = "as";
+
     private static final String COMMAND_FILE_LONG_OPTION = "command-file";
     private static final String COMMAND_FILE_SHORT_OPTION = "cf";
 
@@ -63,6 +66,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
 
         applicationCliOptions.addOption(HORIZONTAL_START_SHORT_OPTION, HORIZONTAL_START_LONG_OPTION, true, "Submarine's starting Horizontal location (meters).");
         applicationCliOptions.addOption(DEPTH_START_SHORT_OPTION, DEPTH_START_LONG_OPTION, true, "Submarine's starting Depth (meters).");
+        applicationCliOptions.addOption(AIM_START_SHORT_OPTION, AIM_START_LONG_OPTION, true, "Submarine's starting Aim (meters).");
         applicationCliOptions.addOption(COMMAND_FILE_SHORT_OPTION, COMMAND_FILE_LONG_OPTION, true, "The fully-qualified filename of a command file to steer the submarine in batch mode. If not specified, program will run in interactive mode.");
         applicationCliOptions.addOption(HELP_SHORT_OPTION, HELP_LONG_OPTION, false, "Display help information");
     }
@@ -112,6 +116,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
 
         double horizontalStart;
         double depthStart;
+        double aimStart;
         String commandFilename;
 
         try
@@ -120,6 +125,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
 
             horizontalStart = commandLine.getParsedOptionValue(HORIZONTAL_START_LONG_OPTION, 0.0);
             depthStart = commandLine.getParsedOptionValue(DEPTH_START_LONG_OPTION, 0.0);
+            aimStart = commandLine.getParsedOptionValue(AIM_START_LONG_OPTION, 0.0);
             commandFilename = commandLine.getParsedOptionValue(COMMAND_FILE_LONG_OPTION, "");
         }
         catch (Exception e)
@@ -128,7 +134,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
             return;
         }
 
-        submarineLocation.setConfigValue(horizontalStart, depthStart);
+        submarineLocation.setConfigValue(horizontalStart, depthStart, aimStart);
 
         File commandFile = null;
         if (StringUtils.isNotBlank(commandFilename))

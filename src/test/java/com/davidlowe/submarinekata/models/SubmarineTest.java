@@ -40,7 +40,7 @@ class SubmarineTest
     void testCommandAvailable_Forward()
     {
         val zeroDistance = 0.0;
-        location.setConfigValue(zeroDistance, zeroDistance);
+        location.setConfigValue(zeroDistance, zeroDistance, zeroDistance);
         val distance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command = new Command(Direction.FORWARD, distance);
         val event = new CommandAvailableEvent(this, command);
@@ -49,6 +49,7 @@ class SubmarineTest
 
         assertEquals(distance, location.getHorizontalLocation());
         assertEquals(zeroDistance, location.getDepth());
+        assertEquals(zeroDistance, location.getAim());
     }
 
     @Test
@@ -56,7 +57,8 @@ class SubmarineTest
     {
         val zeroDistance = 0.0;
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(zeroDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(zeroDistance, depth, aim);
 
         val distance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command = new Command(Direction.UP, distance);
@@ -65,14 +67,15 @@ class SubmarineTest
         submarine.commandAvailable(event);
 
         assertEquals(zeroDistance, location.getHorizontalLocation());
-        assertEquals(depth - distance, location.getDepth());
+        assertEquals(depth, location.getDepth());
+        assertEquals(aim - distance, location.getAim());
     }
 
     @Test
     void testCommandAvailable_Down()
     {
         val zeroDistance = 0.0;
-        location.setConfigValue(zeroDistance, zeroDistance);
+        location.setConfigValue(zeroDistance, zeroDistance, zeroDistance);
         val distance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command = new Command(Direction.DOWN, distance);
         val event = new CommandAvailableEvent(this, command);
@@ -80,14 +83,15 @@ class SubmarineTest
         submarine.commandAvailable(event);
 
         assertEquals(zeroDistance, location.getHorizontalLocation());
-        assertEquals(distance, location.getDepth());
+        assertEquals(zeroDistance, location.getDepth());
+        assertEquals(distance, location.getAim());
     }
 
     @Test
     void testCommandAvailable_MultipleCommands()
     {
         val zeroDistance = 0.0;
-        location.setConfigValue(zeroDistance, zeroDistance);
+        location.setConfigValue(zeroDistance, zeroDistance, zeroDistance);
 
         val horizontalDistance1 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command1 = new Command(Direction.FORWARD, horizontalDistance1);
@@ -96,6 +100,7 @@ class SubmarineTest
 
         assertEquals(horizontalDistance1, location.getHorizontalLocation());
         assertEquals(zeroDistance, location.getDepth());
+        assertEquals(zeroDistance, location.getAim());
 
         val depthDistance1 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command2 = new Command(Direction.DOWN, depthDistance1);
@@ -103,7 +108,8 @@ class SubmarineTest
         submarine.commandAvailable(event2);
 
         assertEquals(horizontalDistance1, location.getHorizontalLocation());
-        assertEquals(depthDistance1, location.getDepth());
+        assertEquals(zeroDistance, location.getDepth());
+        assertEquals(depthDistance1, location.getAim());
 
         val horizontalDistance2 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command3 = new Command(Direction.FORWARD, horizontalDistance2);
@@ -111,15 +117,17 @@ class SubmarineTest
         submarine.commandAvailable(event3);
         val horizontalDistanceSum1 = horizontalDistance1 + horizontalDistance2;
         assertEquals(horizontalDistanceSum1, location.getHorizontalLocation());
-        assertEquals(depthDistance1, location.getDepth());
+        val depthSum = depthDistance1 * horizontalDistance2;
+        assertEquals(depthSum, location.getDepth());
+        assertEquals(depthDistance1, location.getAim());
 
         val depthDistance2 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command4 = new Command(Direction.UP, depthDistance2);
         val event4 = new CommandAvailableEvent(this, command4);
         submarine.commandAvailable(event4);
-        val depthDistanceSum1 = depthDistance1 - depthDistance2;
         assertEquals(horizontalDistanceSum1, location.getHorizontalLocation());
-        assertEquals(depthDistanceSum1, location.getDepth());
+        assertEquals(depthSum, location.getDepth());
+        assertEquals(depthDistance1 - depthDistance2, location.getAim());
     }
 
     @Test
@@ -136,7 +144,8 @@ class SubmarineTest
     {
         val horizontalLocation = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalLocation, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalLocation, depth, aim);
         val command = new Command(Direction.FORWARD, 0.0);
         val event = new CommandAvailableEvent(this, command);
 
@@ -144,6 +153,7 @@ class SubmarineTest
 
         assertEquals(horizontalLocation, location.getHorizontalLocation());
         assertEquals(depth, location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
@@ -151,7 +161,8 @@ class SubmarineTest
     {
         val horizontalLocation = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalLocation, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalLocation, depth, aim);
         val distance = RandomValueUtils.randomNegativeSinglePrecisionDouble();
         val command = new Command(Direction.FORWARD, distance);
         val event = new CommandAvailableEvent(this, command);
@@ -159,14 +170,15 @@ class SubmarineTest
         submarine.commandAvailable(event);
 
         assertEquals(horizontalLocation + distance, location.getHorizontalLocation());
-        assertEquals(depth, location.getDepth());
+        assertEquals(depth + (aim * distance), location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
     void testSubmarineLocationIsShared()
     {
         val zero = 0.0;
-        location.setConfigValue(zero, zero);
+        location.setConfigValue(zero, zero, zero);
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command = new Command(Direction.FORWARD, horizontalDistance);
         val event = new CommandAvailableEvent(this, command);
@@ -176,9 +188,11 @@ class SubmarineTest
         // Verify the submarine's location reference is updated
         assertEquals(horizontalDistance, submarine.getCurrentLocation().getHorizontalLocation());
         assertEquals(zero, submarine.getCurrentLocation().getDepth());
+        assertEquals(zero, location.getAim());
 
         // Verify the original location object is also updated
         assertEquals(horizontalDistance, location.getHorizontalLocation());
         assertEquals(zero, location.getDepth());
+        assertEquals(zero, location.getAim());
     }
 }

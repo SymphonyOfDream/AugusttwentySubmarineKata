@@ -24,6 +24,7 @@ class LocationTest
     {
         assertEquals(0.0, location.getHorizontalLocation());
         assertEquals(0.0, location.getDepth());
+        assertEquals(0.0, location.getAim());
     }
 
     @Test
@@ -31,10 +32,12 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
         assertEquals(depth, location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
@@ -42,20 +45,23 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomNegativeSinglePrecisionDouble();
         val depth = RandomValueUtils.randomNegativeSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomNegativeSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
         assertEquals(depth, location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
     void testSetConfigValue_ZeroValues()
     {
         val zeroDistance = 0.0;
-        location.setConfigValue(zeroDistance, zeroDistance);
+        location.setConfigValue(zeroDistance, zeroDistance, zeroDistance);
 
         assertEquals(zeroDistance, location.getHorizontalLocation());
         assertEquals(zeroDistance, location.getDepth());
+        assertEquals(zeroDistance, location.getAim());
     }
 
     @Test
@@ -63,7 +69,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val distance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command = new Command(Direction.FORWARD, distance);
@@ -71,7 +78,8 @@ class LocationTest
         location.processCommand(command);
 
         assertEquals(horizontalDistance + distance, location.getHorizontalLocation());
-        assertEquals(depth, location.getDepth());
+        assertEquals(depth + (aim * distance), location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
@@ -79,7 +87,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val distance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command = new Command(Direction.UP, distance);
@@ -87,7 +96,8 @@ class LocationTest
         location.processCommand(command);
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
-        assertEquals(depth - distance, location.getDepth());
+        assertEquals(depth, location.getDepth());
+        assertEquals(aim - distance, location.getAim());
     }
 
     @Test
@@ -95,7 +105,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val distance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val command = new Command(Direction.DOWN, distance);
@@ -103,7 +114,8 @@ class LocationTest
         location.processCommand(command);
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
-        assertEquals(depth + distance, location.getDepth());
+        assertEquals(depth, location.getDepth());
+        assertEquals(aim + distance, location.getAim());
     }
 
     @Test
@@ -111,7 +123,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val command = new Command(Direction.FORWARD, 0.0);
 
@@ -119,6 +132,7 @@ class LocationTest
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
         assertEquals(depth, location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
@@ -126,7 +140,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val command = new Command(Direction.UP, 0.0);
 
@@ -134,6 +149,7 @@ class LocationTest
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
         assertEquals(depth, location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
@@ -141,7 +157,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val command = new Command(Direction.DOWN, 0.0);
 
@@ -149,6 +166,7 @@ class LocationTest
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
         assertEquals(depth, location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
@@ -156,7 +174,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val distance = RandomValueUtils.randomNegativeSinglePrecisionDouble();
         val command = new Command(Direction.FORWARD, distance);
@@ -164,7 +183,8 @@ class LocationTest
         location.processCommand(command);
 
         assertEquals(horizontalDistance + distance, location.getHorizontalLocation());
-        assertEquals(depth, location.getDepth());
+        assertEquals(depth + (aim * distance), location.getDepth());
+        assertEquals(aim, location.getAim());
     }
 
     @Test
@@ -172,7 +192,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val distance = RandomValueUtils.randomNegativeSinglePrecisionDouble();
         val command = new Command(Direction.UP, distance);
@@ -180,7 +201,8 @@ class LocationTest
         location.processCommand(command);
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
-        assertEquals(depth - distance, location.getDepth());
+        assertEquals(depth, location.getDepth());
+        assertEquals(aim - distance, location.getAim());
     }
 
     @Test
@@ -188,7 +210,8 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-        location.setConfigValue(horizontalDistance, depth);
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         val distance = RandomValueUtils.randomNegativeSinglePrecisionDouble();
         val command = new Command(Direction.DOWN, distance);
@@ -196,41 +219,55 @@ class LocationTest
         location.processCommand(command);
 
         assertEquals(horizontalDistance, location.getHorizontalLocation());
-        assertEquals(depth + distance, location.getDepth());
+        assertEquals(depth, location.getDepth());
+        assertEquals(aim + distance, location.getAim());
     }
 
 
     @Test
     void testProcessCommand_MultipleCommands()
     {
-        location.setConfigValue(0.0, 0.0);
+        val zero = 0.0;
+        location.setConfigValue(zero, zero, zero);
 
+        // Forward: change horizontal position, depth goes += (aim * distance)
         val horizontalDistance1 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         location.processCommand(new Command(Direction.FORWARD, horizontalDistance1));
         assertEquals(horizontalDistance1, location.getHorizontalLocation());
-        assertEquals(0.0, location.getDepth());
+        assertEquals(zero, location.getDepth());
+        assertEquals(zero, location.getAim());
 
+        // Down: aim goes += distance
         val depthDistance1 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         location.processCommand(new Command(Direction.DOWN, depthDistance1));
         assertEquals(horizontalDistance1, location.getHorizontalLocation());
-        assertEquals(depthDistance1, location.getDepth());
+        assertEquals(zero, location.getDepth());
+        assertEquals(depthDistance1, location.getAim());
 
+        // Forward: change horizontal position, depth goes += (aim * distance)
         val horizontalDistance2 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         location.processCommand(new Command(Direction.FORWARD, horizontalDistance2));
         val newHorizontalSum = horizontalDistance1 + horizontalDistance2;
+        val newDepthSum = horizontalDistance2 * depthDistance1;
         assertEquals(newHorizontalSum, location.getHorizontalLocation());
-        assertEquals(depthDistance1, location.getDepth());
+        assertEquals(newDepthSum, location.getDepth());
+        assertEquals(depthDistance1, location.getAim());
 
+        // Up: aim goes -= distance
         val depthDistance2 = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         location.processCommand(new Command(Direction.UP, depthDistance2));
         assertEquals(newHorizontalSum, location.getHorizontalLocation());
-        assertEquals(depthDistance1 - depthDistance2, location.getDepth());
+        assertEquals(newDepthSum, location.getDepth());
+        assertEquals(depthDistance1 - depthDistance2, location.getAim());
     }
 
     @Test
     void testProcessCommand_NullCommand()
     {
-        location.setConfigValue(10.0, 20.0);
+        val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
 
         assertThrows(NullPointerException.class, () ->
         {
@@ -243,9 +280,9 @@ class LocationTest
     {
         val horizontalDistance = RandomValueUtils.randomPositiveSinglePrecisionDouble();
         val depth = RandomValueUtils.randomPositiveSinglePrecisionDouble();
-
-        location.setConfigValue(horizontalDistance, depth);
-        String result = location.toString();
+        val aim = RandomValueUtils.randomPositiveSinglePrecisionDouble();
+        location.setConfigValue(horizontalDistance, depth, aim);
+        val result = location.toString();
 
         assertNotNull(result);
 

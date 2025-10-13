@@ -15,11 +15,13 @@ public class Location
 {
     private double horizontalLocation;
     private double depth;
+    private double aim;
 
-    public void setConfigValue(double horizontalLocation, double depth)
+    public void setConfigValue(double horizontalLocation, double depth, double aim)
     {
         this.horizontalLocation = horizontalLocation;
         this.depth = depth;
+        this.aim = aim;
     }
 
     /**
@@ -42,16 +44,17 @@ public class Location
     private void executeForwardCommand(double distance)
     {
         horizontalLocation += distance;
+        depth += aim * distance;
     }
 
     private void executeUpCommand(double distance)
     {
-        depth -= distance;
+        aim -= distance;
     }
 
     private void executeDownCommand(double distance)
     {
-        depth += distance;
+        aim += distance;
     }
 
     /**
@@ -61,6 +64,6 @@ public class Location
     public String toString()
     {
         val df = new DecimalFormat("0.#########");
-        return String.format("Location (%s,%s)", df.format(horizontalLocation), df.format(depth));
+        return String.format("Location (Horizontal: %s, Depth: %s, Aim: %s)", df.format(horizontalLocation), df.format(depth), df.format(aim));
     }
 }
