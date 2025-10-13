@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * The Submarine class represents the submarine itself.
+ * Its current location is updated via event processing of CommandAvailableEvent objects.
+ */
 @Getter
 @RequiredArgsConstructor
 @Component
@@ -17,7 +20,7 @@ public class Submarine
 
 
     /**
-     * Move this submarine based on the Command we receive.
+     * Processes a CommandAvailableEvent, which could change the submarine's current location.
      *
      * @param event Event containing a Command that was received.
      */

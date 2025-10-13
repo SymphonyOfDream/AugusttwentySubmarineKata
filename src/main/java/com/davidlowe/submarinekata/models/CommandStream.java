@@ -3,7 +3,6 @@ package com.davidlowe.submarinekata.models;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -23,23 +22,23 @@ public class CommandStream
      * Sets commandReader to either an InputStreamReader or FileReader depending on whether the
      * 'fqInputFilename' value is not blank.
      *
-     * @param fqInputFilename If not blank, creates 'commandReader' as a buffered FileReader using the specified filename. If blank,
-     *                        creates 'commandReader' as a buffered InputStreamReader.
+     * @param commandFile If not null, creates 'commandReader' as a buffered FileReader using the specified filename.
+     *                    If blank, creates 'commandReader' as a buffered InputStreamReader.
      *
-     * @throws FileNotFoundException Thrown if 'fqInputFilename' is not blank, but is not an actual file.
+     * @throws FileNotFoundException Thrown if 'commandFile' does not exist, or is not available for reading.
      */
-    public void setConfigValue(String fqInputFilename)
+    public void setConfigValue(File commandFile)
             throws FileNotFoundException
     {
-        if (StringUtils.isNotBlank(fqInputFilename))
+        if (commandFile != null)
         {
             try
             {
-                this.commandReader = new BufferedReader(new FileReader(fqInputFilename));
+                this.commandReader = new BufferedReader(new FileReader(commandFile));
             }
             catch (FileNotFoundException e)
             {
-                val msg = "File not found \"%s\"".formatted(fqInputFilename);
+                val msg = "File \"%s\" is not available for reading.".formatted(commandFile.getAbsolutePath());
                 log.error(msg, e);
                 throw e;
             }
@@ -50,7 +49,7 @@ public class CommandStream
         }
     }
 
-    
+
     /**
      * Reads the next line from the active input stream (InputStreamReader or FileReader).
      *

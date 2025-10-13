@@ -2,13 +2,14 @@ package com.davidlowe.submarinekata.models;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Component;
+
+import java.text.DecimalFormat;
 
 @Slf4j
 @Getter
-@ToString
 @Component
 public class Location
 {
@@ -21,16 +22,45 @@ public class Location
         this.depth = depth;
     }
 
-
+    /**
+     * Potentially changes horizontal or depth based on 'command' (command distance could be 0, resulting in no change)..
+     *
+     * @param command Command to process.
+     */
     public void processCommand(@NonNull Command command)
     {
         log.info("Processing command {}", command);
         switch (command.direction())
         {
-            case FORWARD -> horizontalLocation += command.distance();
-            case UP -> depth -= command.distance();
-            case DOWN -> depth += command.distance();
+            case FORWARD -> executeForwardCommand(command.distance());
+            case UP -> executeUpCommand(command.distance());
+            case DOWN -> executeDownCommand(command.distance());
         }
         log.info("New location ({},{})", horizontalLocation, depth);
+    }
+
+    private void executeForwardCommand(double distance)
+    {
+        horizontalLocation += distance;
+    }
+
+    private void executeUpCommand(double distance)
+    {
+        depth -= distance;
+    }
+
+    private void executeDownCommand(double distance)
+    {
+        depth += distance;
+    }
+
+    /**
+     * @return Returns a string representation of the object, with any trailing '0' decimal digits stripped.
+     */
+    @Override
+    public String toString()
+    {
+        val df = new DecimalFormat("0.#########");
+        return String.format("Location (%s,%s)", df.format(horizontalLocation), df.format(depth));
     }
 }
