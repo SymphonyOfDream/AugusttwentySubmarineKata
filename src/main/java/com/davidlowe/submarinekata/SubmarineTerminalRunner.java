@@ -108,7 +108,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
             throws Exception
     {
         createApplicationCliOptions();
-        if (ArrayUtils.isEmpty(args) || ArrayUtils.contains(args, "-h") || ArrayUtils.contains(args, "--help"))
+        if (ArrayUtils.contains(args, "-h") || ArrayUtils.contains(args, "--help"))
         {
             printHelp();
             return;

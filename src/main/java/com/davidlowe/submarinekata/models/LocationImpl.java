@@ -38,7 +38,7 @@ public class LocationImpl implements Location
             case UP -> executeUpCommand(command.distance());
             case DOWN -> executeDownCommand(command.distance());
         }
-        log.info("New location ({},{})", horizontalLocation, depth);
+        log.info("New location ({},{}, {})", horizontalLocation, depth, aim);
     }
 
     private void executeForwardCommand(double distance)
