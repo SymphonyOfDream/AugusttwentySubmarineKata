@@ -1,6 +1,6 @@
 package com.davidlowe.submarinekata;
 
-import com.davidlowe.submarinekata.models.CommandProcessor;
+import com.davidlowe.submarinekata.models.CommandFactory;
 import com.davidlowe.submarinekata.models.CommandStream;
 import com.davidlowe.submarinekata.models.Location;
 import com.davidlowe.submarinekata.models.Submarine;
@@ -51,7 +51,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
     private static Options applicationCliOptions;
 
     private final CommandStream commandStreamBean;
-    private final CommandProcessor commandProcessor;
+    private final CommandFactory commandFactory;
     private final Location submarineLocation;
     private final Submarine submarine;
 
@@ -156,7 +156,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
         commandStreamBean.setConfigValue(commandFile);
 
         log.info("Starting command reader.");
-        val commandsRead = commandProcessor.start().get();
+        val commandsRead = commandFactory.start().get();
         log.info("Finished reading commands. Read {} commands.", commandsRead);
 
         val subFinalLocation = submarine.getCurrentLocation();

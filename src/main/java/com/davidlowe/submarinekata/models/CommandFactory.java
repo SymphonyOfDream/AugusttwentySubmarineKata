@@ -16,11 +16,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * This class will receive String inputs of commands and convert those to
  * Command objects, then publish those commands via CommandAvailableEvent events.
+ * The Strings are coming from CommandStream, which can be any type of input stream.
  */
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CommandProcessor
+public class CommandFactory
 {
     private final ApplicationEventPublisher eventPublisher;
     private final CommandStream commandStream;

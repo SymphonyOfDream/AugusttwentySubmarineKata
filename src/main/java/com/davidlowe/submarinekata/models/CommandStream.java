@@ -16,7 +16,7 @@ import java.io.*;
 @Component
 public class CommandStream
 {
-    private BufferedReader commandReader;
+    private BufferedReader commandReader = null;
 
     /**
      * Sets commandReader to either an InputStreamReader or FileReader depending on whether the
@@ -28,8 +28,23 @@ public class CommandStream
      * @throws FileNotFoundException Thrown if 'commandFile' does not exist, or is not available for reading.
      */
     public void setConfigValue(File commandFile)
-            throws FileNotFoundException
+            throws IOException
     {
+        if (this.commandReader != null)
+        {
+            try
+            {
+                this.commandReader.close();
+            }
+            catch (IOException e)
+            {
+                val msg = "Error closing preexisting commandReader.";
+                log.error(msg, e);
+                throw e;
+            }
+            this.commandReader = null;
+        }
+
         if (commandFile != null)
         {
             try
