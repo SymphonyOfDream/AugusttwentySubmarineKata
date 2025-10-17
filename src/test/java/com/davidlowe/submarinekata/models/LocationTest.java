@@ -16,7 +16,7 @@ class LocationTest
     @BeforeEach
     void setUp()
     {
-        location = new Location();
+        location = new LocationImpl();
     }
 
     @Test

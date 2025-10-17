@@ -15,7 +15,7 @@ class SubmarineTest
     @BeforeEach
     void setUp()
     {
-        location = new Location();
+        location = new LocationImpl();
         submarine = new Submarine(location);
     }
 
