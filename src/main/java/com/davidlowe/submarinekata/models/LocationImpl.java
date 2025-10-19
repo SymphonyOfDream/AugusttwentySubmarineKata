@@ -29,9 +29,12 @@ public class LocationImpl implements Location
      *
      * @param command Command to process.
      */
-    public void processCommand(@NonNull Command command)
+    public boolean processCommand(@NonNull Command command)
     {
         log.info("Processing command {}", command);
+        val currHorizontalLocation = horizontalLocation;
+        val currDepth = depth;
+        val currAim = aim;
         switch (command.direction())
         {
             case FORWARD -> executeForwardCommand(command.distance());
@@ -39,6 +42,7 @@ public class LocationImpl implements Location
             case DOWN -> executeDownCommand(command.distance());
         }
         log.info("New location ({},{}, {})", horizontalLocation, depth, aim);
+        return currHorizontalLocation != horizontalLocation || currDepth != depth || currAim != aim;
     }
 
     private void executeForwardCommand(double distance)

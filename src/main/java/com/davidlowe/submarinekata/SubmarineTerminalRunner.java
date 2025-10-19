@@ -33,6 +33,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class SubmarineTerminalRunner implements CommandLineRunner
 {
+    // Scanner data file fully qualified name is required.
+    private static final String SCANNER_DATA_FILE_LONG_OPTION = "scanner-file";
+    private static final String SCANNER_DATA_FILE_SHORT_OPTION = "sf";
+
     private static final String HORIZONTAL_START_LONG_OPTION = "horizontal-start";
     private static final String HORIZONTAL_START_SHORT_OPTION = "hs";
 
@@ -63,6 +67,8 @@ public class SubmarineTerminalRunner implements CommandLineRunner
     private static void createApplicationCliOptions()
     {
         applicationCliOptions = new Options();
+
+        applicationCliOptions.addOption(SCANNER_DATA_FILE_SHORT_OPTION, SCANNER_DATA_FILE_LONG_OPTION, true, "The fully-qualified filename of the scanner json data file.");
 
         applicationCliOptions.addOption(HORIZONTAL_START_SHORT_OPTION, HORIZONTAL_START_LONG_OPTION, true, "Submarine's starting Horizontal location (meters).");
         applicationCliOptions.addOption(DEPTH_START_SHORT_OPTION, DEPTH_START_LONG_OPTION, true, "Submarine's starting Depth (meters).");
@@ -114,6 +120,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
             return;
         }
 
+        String scannerFilename;
         double horizontalStart;
         double depthStart;
         double aimStart;
@@ -123,6 +130,7 @@ public class SubmarineTerminalRunner implements CommandLineRunner
         {
             val commandLine = new DefaultParser().parse(applicationCliOptions, args);
 
+            scannerFilename = commandLine.getParsedOptionValue(SCANNER_DATA_FILE_LONG_OPTION);
             horizontalStart = commandLine.getParsedOptionValue(HORIZONTAL_START_LONG_OPTION, 0.0);
             depthStart = commandLine.getParsedOptionValue(DEPTH_START_LONG_OPTION, 0.0);
             aimStart = commandLine.getParsedOptionValue(AIM_START_LONG_OPTION, 0.0);
@@ -135,6 +143,26 @@ public class SubmarineTerminalRunner implements CommandLineRunner
         }
 
         submarineLocation.setConfigValue(horizontalStart, depthStart, aimStart);
+
+        File scannerFile = null;
+        if (StringUtils.isNotBlank(scannerFilename))
+        {
+            scannerFile = new File(scannerFilename);
+            if (!scannerFile.exists())
+            {
+                log.error("Scanner File not found: {}", scannerFilename);
+                return;
+            }
+            log.info("Using scanner file at \"{}\".", scannerFilename);
+        }
+        else
+        {
+            log.error("Scanner file is required.");
+            return;
+        }
+
+        submarine.getScannedSonarDataDb().loadData(scannerFile);
+
 
         File commandFile = null;
         if (StringUtils.isNotBlank(commandFilename))
@@ -163,5 +191,9 @@ public class SubmarineTerminalRunner implements CommandLineRunner
         log.info("RUN COMPLETE");
         log.info("Submarine final location: {}", subFinalLocation);
         log.info("Total distance from origin point to final location: {}", subFinalLocation.getHorizontalLocation() * subFinalLocation.getDepth());
+
+        log.info("!!!Submarine map!!!", subFinalLocation.getDepth());
+
+        submarine.printMap();
     }
 }

@@ -20,8 +20,10 @@ public interface Location
      * Potentially changes horizontal or depth based on 'command' (command distance could be 0, resulting in no change)..
      *
      * @param command Command to process.
+     *
+     * @return True if location was changed, false otherwise.
      */
-    void processCommand(@NonNull Command command);
+    boolean processCommand(@NonNull Command command);
 
 
     double getHorizontalLocation();
